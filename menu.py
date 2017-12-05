@@ -1,13 +1,6 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Thu Nov 23 16:32:34 2017
-
-@author: mathe
-"""
-#Imports
 import pygame,sys, time
 from pygame.locals import *
-import jogo as isso
+import jogo as joguinho
 
 #Função que chama o menu
 def menu():
@@ -20,8 +13,6 @@ def menu():
 	fundo=pygame.image.load('background.png')
     
 	fonte=pygame.font.Font("anirb.ttf", 40)
-    
-    #Opções
     
 
 	lampada = ("lampada.png")
@@ -51,9 +42,9 @@ def menu():
 		if (d==6):
 				d=0
     
-				tela.fill([0,0,0]) #a tela fica preta no fundo
+				tela.fill([0,0,0]) 
     
-				tela.blit(fundo, [0,0]) #a logo1 é	 posicionada nas coordenadas em 0,0
+				tela.blit(fundo, [0,0])
 				tela.blit(titulo, [110,-100])
 				tela.blit(xp, [420,300])
 				tela.blit(yp, [410,400])
@@ -110,7 +101,7 @@ def menu():
 							egito=[350,405]
 					 
 						elif markerp==1 and event.key==pygame.K_RETURN:
-							isso.jogo()
+							joguinho.jogo()
 						
 						elif markerp==3 and event.key==pygame.K_RETURN:
 							pygame.mixer.music.fadeout(2)
