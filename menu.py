@@ -67,7 +67,7 @@ def menu():
 							markerp=2
 						
 						elif xp==iniciar_NEW and event.key==K_UP:
-							xp=inciar
+							xp=iniciar
 							yp=lista
 							zp=quitar_NEW
 							markerp=3
