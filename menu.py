@@ -7,6 +7,7 @@ Created on Thu Nov 23 16:32:34 2017
 #Imports
 import pygame,sys, time
 from pygame.locals import *
+import jogo as isso
 
 #Função que chama o menu
 def menu():
@@ -21,6 +22,10 @@ def menu():
 	fonte=pygame.font.Font("anirb.ttf", 40)
     
     #Opções
+    
+
+	lampada = ("lampada.png")
+	titulo=pygame.image.load('title1.png') #titulo
 	iniciar=fonte.render("Iniciar",1,(205,25,205)) #texto 1
 	lista=fonte.render("Lista de Pessoas",1,(205,25,205))
 	quitar=fonte.render("Sair",1,(205,25,205))
@@ -49,9 +54,11 @@ def menu():
 				tela.fill([0,0,0]) #a tela fica preta no fundo
     
 				tela.blit(fundo, [0,0]) #a logo1 é	 posicionada nas coordenadas em 0,0
+				tela.blit(titulo, [110,-100])
 				tela.blit(xp, [420,300])
 				tela.blit(yp, [410,400])
 				tela.blit(zp, [410,500])
+				tela.blit(pygame.image.load(lampada), egito)
 				
 				
 				events=pygame.event.get();
@@ -65,41 +72,46 @@ def menu():
 							yp=lista_NEW
 							zp=quitar
 							markerp=2
+							egito=[350,405]
 						
 						elif xp==iniciar_NEW and event.key==K_UP:
-							xp=inciar
+							xp=iniciar
 							yp=lista
 							zp=quitar_NEW
 							markerp=3
+							egito=[350,505]
 					
 						elif yp==lista_NEW and event.key==K_DOWN:
 							xp=iniciar
 							yp=lista
 							zp=quitar_NEW
 							markerp=3
+							egito=[350,505]
 					
 						elif yp==lista_NEW and event.key==K_UP:
 							xp=iniciar_NEW
 							yp=lista
 							zp=quitar
 							markerp=1
+							egito=[350,305]
 				
 						elif zp==quitar_NEW and event.key==K_DOWN:
 							xp=iniciar_NEW
 							yp=lista
 							zp=quitar
 							markerp=1
+							egito=[350,305]
 					
 						elif zp==quitar_NEW and event.key==K_UP:
 							xp=iniciar
 							yp=lista_NEW
 							zp=quitar
 							markerp=2
-					
-						#elif markerp==1 and event.key==pygame.K_RETURN:
-						#	historinha.HISTORIONA()
-						#elif markerp==2 and event.key==pygame.K_RETURN:
-						#	opt.opcoes()
+							egito=[350,405]
+					 
+						elif markerp==1 and event.key==pygame.K_RETURN:
+							isso.jogo()
+						
 						elif markerp==3 and event.key==pygame.K_RETURN:
 							pygame.mixer.music.fadeout(2)
 							sys.exit()
