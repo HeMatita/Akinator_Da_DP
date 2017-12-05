@@ -242,8 +242,13 @@ blue = (0,0,255)
  
 block_color = (53,115,255)
 
-bright_red = (255,0,0)
-bright_green = (0,255,100)
+cor_sim = (46, 184, 46)
+cor_não = (0, 107, 179)
+cor_não_sei = (191, 0, 255)
+
+cor_sim_escolha = (132, 225, 132)
+cor_não_escolha = (26, 163, 255)
+cor_não_sei_escolha = (210, 77, 255)
  
  
 gameDisplay = pygame.display.set_mode((display_width,display_height))
@@ -302,9 +307,9 @@ def game_intro():
         #print(mouse)
 
         if 150+100 > mouse[0] > 150 and 450+50 > mouse[1] > 450:
-            pygame.draw.rect(gameDisplay, bright_green,(150,450,100,50))
+            pygame.draw.rect(gameDisplay, cor_sim_escolha,(150,450,100,50))
         else:
-            pygame.draw.rect(gameDisplay, green,(150,450,100,50))
+            pygame.draw.rect(gameDisplay, cor_sim,(150,450,100,50))
         pygame.draw.rect(gameDisplay, red,(550,450,100,50))
         pygame.display.update()
         clock.tick(15)
