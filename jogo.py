@@ -1,12 +1,6 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Tue Dec  5 20:06:07 2017
-
-@author: mathe
-"""
 import pygame
 from pygame.locals import *
-import time,sys
+
 
 
 def principal():
@@ -33,4 +27,3 @@ def principal():
         tela.blit(pygame.image.load(genio[d]), lampada)
         d=d+1
         pygame.display.update()
-principal()
