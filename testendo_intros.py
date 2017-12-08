@@ -8,6 +8,9 @@ Created on Thu Dec  7 19:30:57 2017
 import pygame
 import time
 import random
+import pygame,sys, time
+from pygame.locals import *
+import jogo as joguinho
  
 pygame.init()
 
@@ -110,53 +113,114 @@ def text_objects(text, font):
  
 
     
-def game_intro():
+def menu():
+	pygame.init()
+	pygame.mixer.init()
+	tela=pygame.display.set_mode((1200,720),0,32)
+	pygame.display.set_caption('Akinator da DP')
+    
+    #Fundo do programa
+	fundo=pygame.image.load('background.png')
+    
+	fonte=pygame.font.Font("anirb.ttf", 40)
+    
 
-    intro = True
-
-    while intro:
-        for event in pygame.event.get():
-            #print(event)
-            if event.type == pygame.QUIT:
-                pygame.quit()
-                quit()
-                
-        gameDisplay.fill(white)
-        smallText = pygame.font.Font('freesansbold.ttf',40)
-        TextSurf, TextRect = text_objects("Akinador de DeSoft", smallText)
-        TextRect.center = ((display_width/2),(display_height/10))
-        gameDisplay.blit(TextSurf, TextRect)
-
-        mouse = pygame.mouse.get_pos()
-        click = pygame.mouse.get_pressed()
-        #print(mouse)
-        
-        if 150+100 > mouse[0] > 150 and 450+50 > mouse[1] > 450:
-            pygame.draw.rect(gameDisplay, cor_sim_escolha,(150,450,100,50))
-            if click[0] == 1:
-                game_loop()
-        else:
-            pygame.draw.rect(gameDisplay, cor_sim,(150,450,100,50))
-        if 750+100 > mouse[0] > 750 and 450+50 > mouse[1] > 450:
-            pygame.draw.rect(gameDisplay, cor_sair_escolha,(750,450,100,50))
-            if click[0] == 1:
-                pygame.quit()
-        else:
-            pygame.draw.rect(gameDisplay, cor_sair,(750,450,100,50))
-            
-        smallText = pygame.font.Font("freesansbold.ttf",20)
-        textSurf, textRect = text_objects("Começar", smallText)
-        textRect.center = ( (150+(100/2)), (450+(50/2)) )
-        gameDisplay.blit(textSurf, textRect)
-
-        smallText = pygame.font.Font("freesansbold.ttf",20)
-        textSurf, textRect = text_objects("Sair", smallText)
-        textRect.center = ( (750+(100/2)), (450+(50/2)) )
-        gameDisplay.blit(textSurf, textRect)
-        
-        pygame.display.update()
-        clock.tick(15)
-        
+	lampada = ("lampada.png")
+	titulo=pygame.image.load('title1.png') #titulo
+	iniciar=fonte.render("Iniciar",1,(205,25,205)) #texto 1
+	lista=fonte.render("Lista de Pessoas",1,(205,25,205))
+	quitar=fonte.render("Sair",1,(205,25,205))
+    
+	iniciar_NEW=fonte.render("Iniciar",1,(64,77,205))
+	lista_NEW=fonte.render("Lista de Pessoas",1,(64,77,205))
+	quitar_NEW=fonte.render("Sair",1,(64,77,205))
+    
+	
+	xp=iniciar_NEW
+	yp=lista
+	zp=quitar
+    
+    #Música do programa
+	soundtrack_1="tema.mp3"
+	pygame.mixer.music.load(soundtrack_1) #Música
+	pygame.mixer.music.play(-1)
+    
+	egito=[350,305]
+	d=0
+	while True:
+    	
+		if (d==6):
+				d=0
+    
+				tela.fill([0,0,0]) 
+    
+				tela.blit(fundo, [0,0])
+				tela.blit(titulo, [110,-100])
+				tela.blit(xp, [420,300])
+				tela.blit(yp, [410,400])
+				tela.blit(zp, [410,500])
+				tela.blit(pygame.image.load(lampada), egito)
+				
+				
+				events=pygame.event.get();
+				for event in events:
+					if event.type==pygame.KEYDOWN:
+						if event.key==K_ESCAPE:
+							pygame.mixer.music.fadeout(2)
+							sys.exit()
+						elif xp==iniciar_NEW and event.key==K_DOWN:
+							xp=iniciar
+							yp=lista_NEW
+							zp=quitar
+							markerp=2
+							egito=[350,405]
+						
+						elif xp==iniciar_NEW and event.key==K_UP:
+							xp=iniciar
+							yp=lista
+							zp=quitar_NEW
+							markerp=3
+							egito=[350,505]
+					
+						elif yp==lista_NEW and event.key==K_DOWN:
+							xp=iniciar
+							yp=lista
+							zp=quitar_NEW
+							markerp=3
+							egito=[350,505]
+					
+						elif yp==lista_NEW and event.key==K_UP:
+							xp=iniciar_NEW
+							yp=lista
+							zp=quitar
+							markerp=1
+							egito=[350,305]
+				
+						elif zp==quitar_NEW and event.key==K_DOWN:
+							xp=iniciar_NEW
+							yp=lista
+							zp=quitar
+							markerp=1
+							egito=[350,305]
+					
+						elif zp==quitar_NEW and event.key==K_UP:
+							xp=iniciar
+							yp=lista_NEW
+							zp=quitar
+							markerp=2
+							egito=[350,405]
+					 
+						elif markerp==1 and event.key==pygame.K_RETURN:
+							game_loop()
+						
+						elif markerp==3 and event.key==pygame.K_RETURN:
+							pygame.mixer.music.fadeout(2)
+							pygame.quit()
+    
+                            
+                            
+		d=d+1
+		pygame.display.update()
 def game_loop():
     xl = pd.ExcelFile("EP3_dados.xlsx")
     xl.sheet_names
@@ -164,227 +228,224 @@ def game_loop():
     df = xl.parse()
     print("deu")
     p = random.sample(range(1,41), 40)
-    while len(df) > 2:
-        for i in range(len(p)):
-            perguntas = {1 : "Essa pessoa é da sala {} ?".format(dic_salas[randint(1,3)]), 
-                2 : "Essa pessoa é de {} ?".format(dic_engenharias[randint(1,4)]),
-                3 : "Essa pessoa torce para {} ?".format(dic_times[randint(1,6)]),
-                4 : "Essa pessoa têm {} anos?".format(dic_idade[randint(1,8)]),
-                5 : "Essa pessoa usa óculos ?",
-                6 : "Essa pessoa nasceu na cidade de SP ?",
-                7 : "Essa pessoa faz academia ?",
-                8 : "Essa pessoa dirige ?",
-                9 : "Qual tipo de celular que ela prefere ?",
-                10 : "Essa pessoa namora ?",
-                11 : "Essa pessoa já viajou para fora do Brasil ?",
-                12 : "Essa pessoa têm os olhos de cor {} ?".format(dic_olhos[randint(1,3)]),
-                13 : "O cabelo dessa pessoa é {} ?".format(dic_cabelo[randint(1,3)]),
-                14 : "O tipo de música favorita dessa pessoa é {} ?".format(dic_musica[randint(1,10)]),
-                15 : "Onde que essa pessoa gostaria de morar ?",
-                16 : "Essa pessoa têm irmãos ou irmãs ?",
-                17 : "Essa pessoa prefere salgado ou doce ?",
-                18 : "A cor favorita dessa pessoa é {} ?".format(dic_cor[randint(1,7)]),
-                19 : "Essa pessoa prefere carro ou avião ?",
-                20 : "Essa pessoa prefere frio ou calor ?",
-                21 : "Essa pessoa gosta de esportes ?",
-                22 : "Essa pessoa foi para o Econo 2017 ?",
-                23 : "Essa pessoa já trabalhou ?",
-                24 : "Essa pessoa prefere chá ou café ?",
-                25 : "Essa pessoa prefere filmes ou séries ?",
-                26 : "Essa pessoa já viu neve ?",
-                27 : "Essa pessoa têm algum animal de estimação ?",
-                28 : "Essa pessoa fala bolacha ou biscoito ? ",
-                29 : "Essa pessoa têm descendência {} ?".format(dic_desc[randint(1,5)]),
-                30 : "Essa pessoa têm medo de aranhas ?",
-                31 : "Essa pessoa gosta de videogames ?",
-                32 : "Essa pessoa têm casa na praia ?",
-                33 : "Essa pessoa é destra ou canhota ?",
-                34 : "Essa pessoa gosta de cozinhar ?",
-                35 : "Essa pessoa fala três línguas ou mais ?",
-                36 : "Essa pessoa sabe surfar ?",
-                37 : "Essa pessoa já acampou alguma vez ?",
-                38 : "Essa pessoa têm medo de injeção ?",
-                39 : "Essa pessoa já quebrou algum osso ?",
-                40 : "Essa pessoa já foi picada por uma abelha ?"}
-            gameDisplay.fill(white)
-            smallText = pygame.font.Font('freesansbold.ttf',40)
-            TextSurf, TextRect = text_objects(perguntas[p[i]], smallText)
-            TextRect.center = ((display_width/2),(display_height/10))
-            gameDisplay.blit(TextSurf, TextRect)
+    for i in range(len(p)):
+        perguntas = {1 : "Essa pessoa é da sala {} ?".format(dic_salas[randint(1,3)]), 
+            2 : "Essa pessoa é de {} ?".format(dic_engenharias[randint(1,4)]),
+            3 : "Essa pessoa torce para {} ?".format(dic_times[randint(1,6)]),
+            4 : "Essa pessoa têm {} anos?".format(dic_idade[randint(1,8)]),
+            5 : "Essa pessoa usa óculos ?",
+            6 : "Essa pessoa nasceu na cidade de SP ?",
+            7 : "Essa pessoa faz academia ?",
+            8 : "Essa pessoa dirige ?",
+            9 : "Qual tipo de celular que ela prefere ?",
+            10 : "Essa pessoa namora ?",
+            11 : "Essa pessoa já viajou para fora do Brasil ?",
+            12 : "Essa pessoa têm os olhos de cor {} ?".format(dic_olhos[randint(1,3)]),
+            13 : "O cabelo dessa pessoa é {} ?".format(dic_cabelo[randint(1,3)]),
+            14 : "O tipo de música favorita dessa pessoa é {} ?".format(dic_musica[randint(1,10)]),
+            15 : "Onde que essa pessoa gostaria de morar ?",
+            16 : "Essa pessoa têm irmãos ou irmãs ?",
+            17 : "Essa pessoa prefere salgado ou doce ?",
+            18 : "A cor favorita dessa pessoa é {} ?".format(dic_cor[randint(1,7)]),
+            19 : "Essa pessoa prefere carro ou avião ?",
+            20 : "Essa pessoa prefere frio ou calor ?",
+            21 : "Essa pessoa gosta de esportes ?",
+            22 : "Essa pessoa foi para o Econo 2017 ?",
+            23 : "Essa pessoa já trabalhou ?",
+            24 : "Essa pessoa prefere chá ou café ?",
+            25 : "Essa pessoa prefere filmes ou séries ?",
+            26 : "Essa pessoa já viu neve ?",
+            27 : "Essa pessoa têm algum animal de estimação ?",
+            28 : "Essa pessoa fala bolacha ou biscoito ? ",
+            29 : "Essa pessoa têm descendência {} ?".format(dic_desc[randint(1,5)]),
+            30 : "Essa pessoa têm medo de aranhas ?",
+            31 : "Essa pessoa gosta de videogames ?",
+            32 : "Essa pessoa têm casa na praia ?",
+            33 : "Essa pessoa é destra ou canhota ?",
+            34 : "Essa pessoa gosta de cozinhar ?",
+            35 : "Essa pessoa fala três línguas ou mais ?",
+            36 : "Essa pessoa sabe surfar ?",
+            37 : "Essa pessoa já acampou alguma vez ?",
+            38 : "Essa pessoa têm medo de injeção ?",
+            39 : "Essa pessoa já quebrou algum osso ?",
+            40 : "Essa pessoa já foi picada por uma abelha ?"}
+        gameDisplay.fill(white)
+        smallText = pygame.font.Font('freesansbold.ttf',40)
+        TextSurf, TextRect = text_objects(perguntas[p[i]], smallText)
+        TextRect.center = ((display_width/2),(display_height/10))
+        gameDisplay.blit(TextSurf, TextRect)
                     
-            mouse = pygame.mouse.get_pos()
-            click = pygame.mouse.get_pressed()
-            wait = pygame.event.wait()
-            while wait == True:
-                if 150+100 > mouse[0] > 150 and 450+50 > mouse[1] > 450:
-                    pygame.draw.rect(gameDisplay, cor_sim_escolha,(150,450,100,50))
-                    if click[0] == 1:
-                        if p[i] == 1 or p[i] == 2 or p[i] == 3 or p[i] == 12 or p[i] == 13 or p[i] == 14 or p[i] == 18 or p[i] == 29:
-                            df = df[(df.iloc[:, p[i]-1] == perguntas[p[i]].split()[-2])]
-                        if p[i] == 4:
-                            df = df[(df.iloc[:, p[i]-1] == int(perguntas[p[i]].split()[-2]))]
-                        if p[i] == 5 or p[i] == 6 or p[i] == 7 or p[i] == 8 or p[i] == 10 or p[i] == 11 or p[i] == 16 or p[i] == 21 or p[i] == 22 or p[i] == 23 or p[i] == 26 or p[i] == 27 or p[i] == 29 or p[i] == 30 or p[i] == 31 or p[i] == 32 or p[i] == 34 or p[i] == 35 or p[i] == 36 or p[i] == 37 or p[i] == 38 or p[i] == 39 or p[i] == 40:
-                            df = df[(df.iloc[:, p[i]-1] == "Sim")]
-                        if p[i] == 9:
-                            df = df[(df.iloc[:, p[i]-1] == "Android")]
-                        if p[i] == 15:
-                            df = df[(df.iloc[:, p[i]-1] == "Casa")]
-                        if p[i] == 17:
-                            df = df[(df.iloc[:, p[i]-1] == "Salgado")]
-                        if p[i] == 19:
-                            df = df[(df.iloc[:, p[i]-1] == "Carro")]
-                        if p[i] == 20:
-                            df = df[(df.iloc[:, p[i]-1] == "Frio")]
-                        if p[i] == 24:
-                            df = df[(df.iloc[:, p[i]-1] == "Chá")]
-                        if p[i] == 25:
-                            df = df[(df.iloc[:, p[i]-1] == "Filme")]
-                        if p[i] == 28:
-                            df = df[(df.iloc[:, p[i]-1] == "Bolacha")]
-                        if p[i] == 33:
-                            df = df[(df.iloc[:, p[i]-1] == "Destra")]
-                else:
-                    pygame.draw.rect(gameDisplay, cor_sim,(150,450,100,50))
-                if 450+100 > mouse[0] > 450 and 450+50 > mouse[1] > 450:
-                    pygame.draw.rect(gameDisplay, cor_não_escolha,(450,450,100,50))
-                    if click[0] == 1:
-                        if p[i] == 1 or p[i] == 2 or p[i] == 3 or p[i] == 12 or p[i] == 13 or p[i] == 14 or p[i] == 18 or p[i] == 29:
-                            df = df[(df.iloc[:, p[i]-1] != perguntas[p[i]].split()[-2])]
-                        if p[i] == 4:
-                            df = df[(df.iloc[:, p[i]-1] != int(perguntas[p[i]].split()[-2]))]
-                        if p[i] == 5 or p[i] == 6 or p[i] == 7 or p[i] == 8 or p[i] == 10 or p[i] == 11 or p[i] == 16 or p[i] == 21 or p[i] == 22 or p[i] == 23 or p[i] == 26 or p[i] == 27 or p[i] == 29 or p[i] == 30 or p[i] == 31 or p[i] == 32 or p[i] == 34 or p[i] == 35 or p[i] == 36 or p[i] == 37 or p[i] == 38 or p[i] == 39 or p[i] == 40:
-                            df = df[(df.iloc[:, p[i]-1] == "Não")]
-                        if p[i] == 9:
-                            df = df[(df.iloc[:, p[i]-1] == "iPhone")]
-                        if p[i] == 15:
-                            df = df[(df.iloc[:, p[i]-1] == "Apartamento")]
-                        if p[i] == 17:
-                            df = df[(df.iloc[:, p[i]-1] == "Doce")]
-                        if p[i] == 19:
-                            df = df[(df.iloc[:, p[i]-1] == "Avião")]
-                        if p[i] == 20:
-                            df = df[(df.iloc[:, p[i]-1] == "Calor")]
-                        if p[i] == 24:
-                            df = df[(df.iloc[:, p[i]-1] == "Café")]
-                        if p[i] == 25:
-                            df = df[(df.iloc[:, p[i]-1] == "Série")]
-                        if p[i] == 28:
-                            df = df[(df.iloc[:, p[i]-1] == "Biscoito")]
-                        if p[i] == 33:
-                            df = df[(df.iloc[:, p[i]-1] == "Canhota")]
-                else:
-                    pygame.draw.rect(gameDisplay, cor_não,(450,450,100,50))
-                if 750+100 > mouse[0] > 750 and 450+50 > mouse[1] > 450:
-                    pygame.draw.rect(gameDisplay, cor_não_sei_escolha,(750,450,100,50))
-                    if click[0] == 1:
-                        df = df
-                else:
-                    pygame.draw.rect(gameDisplay, cor_não_sei,(750,450,100,50))
-                if 450+100 > mouse[0] > 450 and 600+50 > mouse[1] >600:
-                    pygame.draw.rect(gameDisplay, cor_sair_escolha,(450,600,100,50))
-                    if click[0] == 1:
-                        pygame.quit()
-                else:
-                    pygame.draw.rect(gameDisplay, cor_sair, (450,600,100,50))
-                    
-                smallText = pygame.font.Font("freesansbold.ttf",20)
-                textSurf, textRect = text_objects("Não sei", smallText)
-                textRect.center = ( (750+(100/2)), (450+(50/2)) )
-                gameDisplay.blit(textSurf, textRect)
-            
-                smallText = pygame.font.Font("freesansbold.ttf",20)
-                textSurf, textRect = text_objects("Sair", smallText)
-                textRect.center = ( (450+(100/2)), (600+(50/2)) )
-                gameDisplay.blit(textSurf, textRect)
-                        
-                if p[i] == 1 or p[i] == 2 or p[i] == 3 or p[i] == 12 or p[i] == 13 or p[i] == 14 or p[i] == 18 or p[i] == 29 or p[i] == 5 or p[i] == 6 or p[i] == 7 or p[i] == 8 or p[i] == 10 or p[i] == 11 or p[i] == 16 or p[i] == 21 or p[i] == 22 or p[i] == 23 or p[i] == 26 or p[i] == 27 or p[i] == 29 or p[i] == 30 or p[i] == 31 or p[i] == 32 or p[i] == 34 or p[i] == 35 or p[i] == 36 or p[i] == 37 or p[i] == 38 or p[i] == 39 or p[i] == 40:
-                    smallText = pygame.font.Font("freesansbold.ttf",20)
-                    textSurf, textRect = text_objects("Sim", smallText)
-                    textRect.center = ( (150+(100/2)), (450+(50/2)) )
-                    gameDisplay.blit(textSurf, textRect)
-                    textSurf, textRect = text_objects("Não", smallText)
-                    textRect.center = ( (450+(100/2)), (450+(50/2)) )
-                    gameDisplay.blit(textSurf, textRect)
+        mouse = pygame.mouse.get_pos()
+        click = pygame.mouse.get_pressed()
+        if 150+100 > mouse[0] > 150 and 450+50 > mouse[1] > 450:
+            pygame.draw.rect(gameDisplay, cor_sim_escolha,(150,450,100,50))
+            if click[0] == 1:
+                if p[i] == 1 or p[i] == 2 or p[i] == 3 or p[i] == 12 or p[i] == 13 or p[i] == 14 or p[i] == 18 or p[i] == 29:
+                    df = df[(df.iloc[:, p[i]-1] == perguntas[p[i]].split()[-2])]
+                if p[i] == 4:
+                    df = df[(df.iloc[:, p[i]-1] == int(perguntas[p[i]].split()[-2]))]
+                if p[i] == 5 or p[i] == 6 or p[i] == 7 or p[i] == 8 or p[i] == 10 or p[i] == 11 or p[i] == 16 or p[i] == 21 or p[i] == 22 or p[i] == 23 or p[i] == 26 or p[i] == 27 or p[i] == 29 or p[i] == 30 or p[i] == 31 or p[i] == 32 or p[i] == 34 or p[i] == 35 or p[i] == 36 or p[i] == 37 or p[i] == 38 or p[i] == 39 or p[i] == 40:
+                    df = df[(df.iloc[:, p[i]-1] == "Sim")]
                 if p[i] == 9:
-                    smallText = pygame.font.Font("freesansbold.ttf",20)
-                    textSurf, textRect = text_objects("Android", smallText)
-                    textRect.center = ( (150+(100/2)), (450+(50/2)) )
-                    gameDisplay.blit(textSurf, textRect)
-                    textSurf, textRect = text_objects("iPhone", smallText)
-                    textRect.center = ( (450+(100/2)), (450+(50/2)) )
-                    gameDisplay.blit(textSurf, textRect)
+                    df = df[(df.iloc[:, p[i]-1] == "Android")]
                 if p[i] == 15:
-                    smallText = pygame.font.Font("freesansbold.ttf",20)
-                    textSurf, textRect = text_objects("Casa", smallText)
-                    textRect.center = ( (150+(100/2)), (450+(50/2)) )
-                    gameDisplay.blit(textSurf, textRect)
-                    textSurf, textRect = text_objects("Apartamento", smallText)
-                    textRect.center = ( (450+(100/2)), (450+(50/2)) )
-                    gameDisplay.blit(textSurf, textRect)
+                    df = df[(df.iloc[:, p[i]-1] == "Casa")]
                 if p[i] == 17:
-                    smallText = pygame.font.Font("freesansbold.ttf",20)
-                    textSurf, textRect = text_objects("Salgado", smallText)
-                    textRect.center = ( (150+(100/2)), (450+(50/2)) )
-                    gameDisplay.blit(textSurf, textRect)
-                    textSurf, textRect = text_objects("Doce", smallText)
-                    textRect.center = ( (450+(100/2)), (450+(50/2)) )
-                    gameDisplay.blit(textSurf, textRect)
+                    df = df[(df.iloc[:, p[i]-1] == "Salgado")]
                 if p[i] == 19:
-                    smallText = pygame.font.Font("freesansbold.ttf",20)
-                    textSurf, textRect = text_objects("Carro", smallText)
-                    textRect.center = ( (150+(100/2)), (450+(50/2)) )
-                    gameDisplay.blit(textSurf, textRect)
-                    textSurf, textRect = text_objects("Avião", smallText)
-                    textRect.center = ( (450+(100/2)), (450+(50/2)) )
-                    gameDisplay.blit(textSurf, textRect)
+                    df = df[(df.iloc[:, p[i]-1] == "Carro")]
                 if p[i] == 20:
-                    smallText = pygame.font.Font("freesansbold.ttf",20)
-                    textSurf, textRect = text_objects("Frio", smallText)
-                    textRect.center = ( (150+(100/2)), (450+(50/2)) )
-                    gameDisplay.blit(textSurf, textRect)
-                    textSurf, textRect = text_objects("Calor", smallText)
-                    textRect.center = ( (450+(100/2)), (450+(50/2)) )
-                    gameDisplay.blit(textSurf, textRect)
+                    df = df[(df.iloc[:, p[i]-1] == "Frio")]
                 if p[i] == 24:
-                    smallText = pygame.font.Font("freesansbold.ttf",20)
-                    textSurf, textRect = text_objects("Chá", smallText)
-                    textRect.center = ( (150+(100/2)), (450+(50/2)) )
-                    gameDisplay.blit(textSurf, textRect)
-                    textSurf, textRect = text_objects("Café", smallText)
-                    textRect.center = ( (450+(100/2)), (450+(50/2)) )
-                    gameDisplay.blit(textSurf, textRect)
+                    df = df[(df.iloc[:, p[i]-1] == "Chá")]
                 if p[i] == 25:
-                    smallText = pygame.font.Font("freesansbold.ttf",20)
-                    textSurf, textRect = text_objects("Filme", smallText)
-                    textRect.center = ( (150+(100/2)), (450+(50/2)) )
-                    gameDisplay.blit(textSurf, textRect)
-                    textSurf, textRect = text_objects("Série", smallText)
-                    textRect.center = ( (450+(100/2)), (450+(50/2)) )
-                    gameDisplay.blit(textSurf, textRect)
+                    df = df[(df.iloc[:, p[i]-1] == "Filme")]
                 if p[i] == 28:
-                    smallText = pygame.font.Font("freesansbold.ttf",20)
-                    textSurf, textRect = text_objects("Bolacha", smallText)
-                    textRect.center = ( (150+(100/2)), (450+(50/2)) )
-                    gameDisplay.blit(textSurf, textRect)
-                    textSurf, textRect = text_objects("Biscoito", smallText)
-                    textRect.center = ( (450+(100/2)), (450+(50/2)) )
-                    gameDisplay.blit(textSurf, textRect)
+                    df = df[(df.iloc[:, p[i]-1] == "Bolacha")]
                 if p[i] == 33:
-                    smallText = pygame.font.Font("freesansbold.ttf",20)
-                    textSurf, textRect = text_objects("Destra", smallText)
-                    textRect.center = ( (150+(100/2)), (450+(50/2)) )
-                    gameDisplay.blit(textSurf, textRect)
-                    textSurf, textRect = text_objects("Canhota", smallText)
-                    textRect.center = ( (450+(100/2)), (450+(50/2)) )
-                    gameDisplay.blit(textSurf, textRect)
+                    df = df[(df.iloc[:, p[i]-1] == "Destra")]
+        else:
+            pygame.draw.rect(gameDisplay, cor_sim,(150,450,100,50))
+        if 450+100 > mouse[0] > 450 and 450+50 > mouse[1] > 450:
+            pygame.draw.rect(gameDisplay, cor_não_escolha,(450,450,100,50))
+            if click[0] == 1:
+                if p[i] == 1 or p[i] == 2 or p[i] == 3 or p[i] == 12 or p[i] == 13 or p[i] == 14 or p[i] == 18 or p[i] == 29:
+                    df = df[(df.iloc[:, p[i]-1] != perguntas[p[i]].split()[-2])]
+                if p[i] == 4:
+                    df = df[(df.iloc[:, p[i]-1] != int(perguntas[p[i]].split()[-2]))]
+                if p[i] == 5 or p[i] == 6 or p[i] == 7 or p[i] == 8 or p[i] == 10 or p[i] == 11 or p[i] == 16 or p[i] == 21 or p[i] == 22 or p[i] == 23 or p[i] == 26 or p[i] == 27 or p[i] == 29 or p[i] == 30 or p[i] == 31 or p[i] == 32 or p[i] == 34 or p[i] == 35 or p[i] == 36 or p[i] == 37 or p[i] == 38 or p[i] == 39 or p[i] == 40:
+                    df = df[(df.iloc[:, p[i]-1] == "Não")]
+                if p[i] == 9:
+                    df = df[(df.iloc[:, p[i]-1] == "iPhone")]
+                if p[i] == 15:
+                    df = df[(df.iloc[:, p[i]-1] == "Apartamento")]
+                if p[i] == 17:
+                    df = df[(df.iloc[:, p[i]-1] == "Doce")]
+                if p[i] == 19:
+                    df = df[(df.iloc[:, p[i]-1] == "Avião")]
+                if p[i] == 20:
+                    df = df[(df.iloc[:, p[i]-1] == "Calor")]
+                if p[i] == 24:
+                    df = df[(df.iloc[:, p[i]-1] == "Café")]
+                if p[i] == 25:
+                    df = df[(df.iloc[:, p[i]-1] == "Série")]
+                if p[i] == 28:
+                    df = df[(df.iloc[:, p[i]-1] == "Biscoito")]
+                if p[i] == 33:
+                    df = df[(df.iloc[:, p[i]-1] == "Canhota")]
+        else:
+            pygame.draw.rect(gameDisplay, cor_não,(450,450,100,50))
+        if 750+100 > mouse[0] > 750 and 450+50 > mouse[1] > 450:
+            pygame.draw.rect(gameDisplay, cor_não_sei_escolha,(750,450,100,50))
+            if click[0] == 1:
+                df = df
+        else:
+            pygame.draw.rect(gameDisplay, cor_não_sei,(750,450,100,50))
+        if 450+100 > mouse[0] > 450 and 600+50 > mouse[1] >600:
+            pygame.draw.rect(gameDisplay, cor_sair_escolha,(450,600,100,50))
+            if click[0] == 1:
+                pygame.quit()
+        else:
+            pygame.draw.rect(gameDisplay, cor_sair, (450,600,100,50))
+                    
+        smallText = pygame.font.Font("freesansbold.ttf",20)
+        textSurf, textRect = text_objects("Não sei", smallText)
+        textRect.center = ( (750+(100/2)), (450+(50/2)) )
+        gameDisplay.blit(textSurf, textRect)
             
-                mouse = pygame.mouse.get_pos()
-                click = pygame.mouse.get_pressed()
+        smallText = pygame.font.Font("freesansbold.ttf",20)
+        textSurf, textRect = text_objects("Sair", smallText)
+        textRect.center = ( (450+(100/2)), (600+(50/2)) )
+        gameDisplay.blit(textSurf, textRect)
                         
-                pygame.display.update()
-                clock.tick(15)
+        if p[i] == 1 or p[i] == 2 or p[i] == 3 or p[i] == 12 or p[i] == 13 or p[i] == 14 or p[i] == 18 or p[i] == 29 or p[i] == 5 or p[i] == 6 or p[i] == 7 or p[i] == 8 or p[i] == 10 or p[i] == 11 or p[i] == 16 or p[i] == 21 or p[i] == 22 or p[i] == 23 or p[i] == 26 or p[i] == 27 or p[i] == 29 or p[i] == 30 or p[i] == 31 or p[i] == 32 or p[i] == 34 or p[i] == 35 or p[i] == 36 or p[i] == 37 or p[i] == 38 or p[i] == 39 or p[i] == 40:
+            smallText = pygame.font.Font("freesansbold.ttf",20)
+            textSurf, textRect = text_objects("Sim", smallText)
+            textRect.center = ( (150+(100/2)), (450+(50/2)) )
+            gameDisplay.blit(textSurf, textRect)
+            textSurf, textRect = text_objects("Não", smallText)
+            textRect.center = ( (450+(100/2)), (450+(50/2)) )
+            gameDisplay.blit(textSurf, textRect)
+        if p[i] == 9:
+            smallText = pygame.font.Font("freesansbold.ttf",20)
+            textSurf, textRect = text_objects("Android", smallText)
+            textRect.center = ( (150+(100/2)), (450+(50/2)) )
+            gameDisplay.blit(textSurf, textRect)
+            textSurf, textRect = text_objects("iPhone", smallText)
+            textRect.center = ( (450+(100/2)), (450+(50/2)) )
+            gameDisplay.blit(textSurf, textRect)
+        if p[i] == 15:
+            smallText = pygame.font.Font("freesansbold.ttf",20)
+            textSurf, textRect = text_objects("Casa", smallText)
+            textRect.center = ( (150+(100/2)), (450+(50/2)) )
+            gameDisplay.blit(textSurf, textRect)
+            textSurf, textRect = text_objects("Apartamento", smallText)
+            textRect.center = ( (450+(100/2)), (450+(50/2)) )
+            gameDisplay.blit(textSurf, textRect)
+        if p[i] == 17:
+            smallText = pygame.font.Font("freesansbold.ttf",20)
+            textSurf, textRect = text_objects("Salgado", smallText)
+            textRect.center = ( (150+(100/2)), (450+(50/2)) )
+            gameDisplay.blit(textSurf, textRect)
+            textSurf, textRect = text_objects("Doce", smallText)
+            textRect.center = ( (450+(100/2)), (450+(50/2)) )
+            gameDisplay.blit(textSurf, textRect)
+        if p[i] == 19:
+            smallText = pygame.font.Font("freesansbold.ttf",20)
+            textSurf, textRect = text_objects("Carro", smallText)
+            textRect.center = ( (150+(100/2)), (450+(50/2)) )
+            gameDisplay.blit(textSurf, textRect)
+            textSurf, textRect = text_objects("Avião", smallText)
+            textRect.center = ( (450+(100/2)), (450+(50/2)) )
+            gameDisplay.blit(textSurf, textRect)
+        if p[i] == 20:
+            smallText = pygame.font.Font("freesansbold.ttf",20)
+            textSurf, textRect = text_objects("Frio", smallText)
+            textRect.center = ( (150+(100/2)), (450+(50/2)) )
+            gameDisplay.blit(textSurf, textRect)
+            textSurf, textRect = text_objects("Calor", smallText)
+            textRect.center = ( (450+(100/2)), (450+(50/2)) )
+            gameDisplay.blit(textSurf, textRect)
+        if p[i] == 24:
+            smallText = pygame.font.Font("freesansbold.ttf",20)
+            textSurf, textRect = text_objects("Chá", smallText)
+            textRect.center = ( (150+(100/2)), (450+(50/2)) )
+            gameDisplay.blit(textSurf, textRect)
+            textSurf, textRect = text_objects("Café", smallText)
+            textRect.center = ( (450+(100/2)), (450+(50/2)) )
+            gameDisplay.blit(textSurf, textRect)
+        if p[i] == 25:
+            smallText = pygame.font.Font("freesansbold.ttf",20)
+            textSurf, textRect = text_objects("Filme", smallText)
+            textRect.center = ( (150+(100/2)), (450+(50/2)) )
+            gameDisplay.blit(textSurf, textRect)
+            textSurf, textRect = text_objects("Série", smallText)
+            textRect.center = ( (450+(100/2)), (450+(50/2)) )
+            gameDisplay.blit(textSurf, textRect)
+        if p[i] == 28:
+            smallText = pygame.font.Font("freesansbold.ttf",20)
+            textSurf, textRect = text_objects("Bolacha", smallText)
+            textRect.center = ( (150+(100/2)), (450+(50/2)) )
+            gameDisplay.blit(textSurf, textRect)
+            textSurf, textRect = text_objects("Biscoito", smallText)
+            textRect.center = ( (450+(100/2)), (450+(50/2)) )
+            gameDisplay.blit(textSurf, textRect)
+        if p[i] == 33:
+            smallText = pygame.font.Font("freesansbold.ttf",20)
+            textSurf, textRect = text_objects("Destra", smallText)
+            textRect.center = ( (150+(100/2)), (450+(50/2)) )
+            gameDisplay.blit(textSurf, textRect)
+            textSurf, textRect = text_objects("Canhota", smallText)
+            textRect.center = ( (450+(100/2)), (450+(50/2)) )
+            gameDisplay.blit(textSurf, textRect)
     
-game_intro()
+        mouse = pygame.mouse.get_pos()
+        click = pygame.mouse.get_pressed()
+                        
+        pygame.display.update()
+        clock.tick(15)
+    
+menu()
 game_loop()
 pygame.quit()
 quit()
