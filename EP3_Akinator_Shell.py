@@ -14,7 +14,7 @@ print("Olá, e bem vindo(a) ao Gênio de DeSoft!!\nPeço para que pense em algum
 
 dic_salas = {1 : "A", 2 : "B", 3 : "C"}
 dic_engenharias = {1 : "Engenharia Mecânica", 2 : "Engenharia Mecatrônica", 3 : "Engenharia de Computação", 4 : "Arquitetura"}
-dic_times = {1 : "o Santos", 2 : "o Corinthians", 3 : "o Palmeiras", 4 : "o São Paulo", 5 : "o Flamengo", 6 : "time nenhum"}
+dic_times = {1 : "o Santos", 2 : "o Corinthians", 3 : "o Palmeiras", 4 : "o São Paulo", 5 : "o Flamengo", 6 : "time nenhum", 7 : "o Fortaleza"}
 dic_idade = {1 : 17, 2 : 18, 3 : 19, 4 : 20, 5 : 21, 6 : 22, 7 : 23, 8 : 43}
 dic_olhos = {1 : "verde", 2 : "azul", 3 : "castanho"}
 dic_cabelo = {1 : "castanho", 2 : "preto", 3 : "loiro"}
@@ -68,7 +68,7 @@ while len(df) > 2:
     for i in range(len(p)):
         perguntas = {1 : "Essa pessoa é da sala {} ?".format(dic_salas[randint(1,3)]), 
              2 : "Essa pessoa é de {} ?".format(dic_engenharias[randint(1,4)]),
-             3 : "Essa pessoa torce para {} ?".format(dic_times[randint(1,6)]),
+             3 : "Essa pessoa torce para {} ?".format(dic_times[randint(1,7)]),
              4 : "Essa pessoa têm {} anos?".format(dic_idade[randint(1,8)]),
              5 : "Essa pessoa usa óculos ?",
              6 : "Essa pessoa nasceu na cidade de SP ?",
